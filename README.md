@@ -21,6 +21,12 @@ Esta versión es un prototipo frontend. Los datos son ficticios y se almacenan t
 
 El archivo `database/schema.sql` es una base inicial que requiere revisión y pruebas antes de ejecutarse. Las políticas RLS habilitan lectura para miembros y dejan la escritura pendiente de la matriz definitiva de permisos por rol.
 
+## Avance de backend — preparación de seguridad
+
+Se agregó `database/migrations/001_core_security.sql` con políticas RLS iniciales, funciones auxiliares de membresía/roles, alta atómica de organizaciones y tabla de auditoría. La guía `documentation/SUPABASE_SETUP.md` explica cómo preparar el proyecto Supabase.
+
+**Estado actual:** el frontend todavía no está conectado a Supabase. La migración debe probarse en un proyecto de desarrollo y someterse a revisión de permisos antes de usar información real. La tabla de auditoría todavía no registra automáticamente todos los cambios: eso requiere triggers/eventos adicionales.
+
 ## Arquitectura prevista
 - Frontend web responsive.
 - Supabase / PostgreSQL para autenticación y persistencia.
