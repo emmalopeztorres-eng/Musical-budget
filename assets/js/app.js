@@ -72,8 +72,7 @@ async function initializeOrganization(user){
   if(message)message.textContent='Acceso correcto. Preparando Cicloramas Producciones…';
   const {data,error}=await supabaseClient.rpc('bootstrap_cicloramas');
   if(error){
-    if(message)message.textContent='Tu acceso fue validado, pero no se pudo inicializar la organización: '+error.message;
-    return;
+    throw new Error('No se pudo inicializar Cicloramas Producciones: '+error.message);
   }
   window.MUSICAL_BUDGET_ORGANIZATION_ID=data;
   const gate=document.getElementById('authGate');if(gate)gate.remove();
@@ -88,7 +87,7 @@ async function startAuthentication(){
   if(!supabaseClient){document.getElementById('authMessage').textContent='Falta la configuración de conexión con Supabase.';return}
   const {data,error}=await supabaseClient.auth.getSession();
   if(error){document.getElementById('authMessage').textContent=authErrorMessage(error);return}
-  if(data.session){await initializeOrganization(data.session.user);return}
+  if(data.session){try{await initializeOrganization(data.session.user)}catch(error){document.getElementById('authMessage').textContent=authErrorMessage(error)}return}
   const status=document.querySelector('.sidebar-bottom small');if(status)status.textContent='Esperando inicio de sesión';
 }
 startAuthentication();
