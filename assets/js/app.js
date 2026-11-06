@@ -2,7 +2,7 @@ const state={view:'dashboard',currency:'ARS',company:'Cicloramas Producciones',p
 const money=(n,c='ARS')=>new Intl.NumberFormat('es-AR',{style:'currency',currency:c,maximumFractionDigits:0}).format(Number(n)||0);
 const $=s=>document.querySelector(s);
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
-const titles={dashboard:'Panel general',,productions:'Producciones',budgets:'Presupuestos',expenses:'Gastos',income:'Ingresos',cashflow:'Flujo de caja',suppliers:'Proveedores',reports:'Informes',users:'Usuarios y permisos',settings:'Configuración'};
+const titles={dashboard:'Panel general',productions:'Producciones',budgets:'Presupuestos',expenses:'Gastos',income:'Ingresos',cashflow:'Flujo de caja',suppliers:'Proveedores',reports:'Informes',users:'Usuarios y permisos',settings:'Configuración'};
 function heading(title,desc,action=''){return '<div class="page-heading"><div><div class="eyebrow">MUSICAL BUDGET / '+title.toUpperCase()+'</div><h1>'+title+'</h1><p>'+desc+'</p></div>'+action+'</div>'}
 function btn(label,action=''){return '<button class="button primary" '+(action?'data-action="'+action+'"':'')+'>'+label+'</button>'}
 function metric(label,value,foot,icon='◈'){return '<div class="metric"><div class="metric-top"><span>'+label+'</span><span class="metric-icon">'+icon+'</span></div><div class="metric-value">'+value+'</div><div class="metric-foot">'+foot+'</div></div>'}
