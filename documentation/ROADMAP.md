@@ -10,7 +10,10 @@
 - [x] Primer esquema relacional PostgreSQL.
 
 ## Entrega 2 — Organizaciones, usuarios y seguridad
-- Crear proyecto Supabase y configurar variables de entorno.
+- [x] Preparar migración inicial de RLS y permisos por rol.
+- [x] Preparar alta atómica de organización y usuario propietario.
+- [x] Documentar configuración y pruebas de aislamiento.
+- [ ] Crear proyecto Supabase y configurar variables públicas de frontend.
 - Implementar inicio y cierre de sesión.
 - Crear organizaciones y alta de miembros por invitación.
 - Definir permisos detallados por rol.
