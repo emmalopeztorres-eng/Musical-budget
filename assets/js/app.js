@@ -40,4 +40,55 @@ function render(){const views={dashboard,productions:productionView,expenses:exp
 function formMarkup(title,fields,submit){return '<div class="form-card"><div class="panel-head"><h3>'+title+'</h3><button class="button" data-action="cancel-form">Cerrar</button></div><form id="entryForm"><div class="form-grid">'+fields.map(f=>'<div class="field"><label>'+f.label+'</label>'+(f.options?'<select name="'+f.name+'" '+(f.required?'required':'')+'>'+f.options.map(o=>'<option>'+o+'</option>').join('')+'</select>':'<input name="'+f.name+'" type="'+(f.type||'text')+'" placeholder="'+(f.placeholder||'')+'" '+(f.required?'required':'')+' '+(f.step?'step="'+f.step+'"':'')+' '+(f.min?'min="'+f.min+'"':'')+'>')+'</div>').join('')+'</div><div class="form-actions"><button class="button primary" type="submit">'+submit+'</button></div></form></div>'}
 function showForm(type){let fields=[],title='',handler=()=>{};const prods=state.productions.map(p=>p.name);if(type==='new-expense'){title='Registrar gasto';fields=[{name:'date',label:'Fecha',type:'date',required:true},{name:'production',label:'Producción',options:prods,required:true},{name:'category',label:'Categoría',options:['Artístico','Técnica','Producción','Escenografía','Vestuario','Utilería','Prensa y marketing','Sala','Derechos','Administración','Otros']},{name:'description',label:'Descripción',required:true},{name:'amount',label:'Importe',type:'number',min:'0',step:'0.01',required:true},{name:'currency',label:'Moneda',options:['ARS','USD']},{name:'status',label:'Estado',options:['Pendiente','Pagado']}];handler=d=>state.expenses.unshift(d)}else if(type==='new-income'){title='Registrar ingreso';fields=[{name:'date',label:'Fecha',type:'date',required:true},{name:'production',label:'Producción',options:prods},{name:'source',label:'Origen',options:['Boletería','Auspicio','Subsidio','Aporte','Coproducción','Otros']},{name:'description',label:'Descripción',required:true},{name:'amount',label:'Importe',type:'number',min:'0',step:'0.01',required:true},{name:'currency',label:'Moneda',options:['ARS','USD']}];handler=d=>state.income.unshift(d)}else if(type==='new-production'){title='Nueva producción';fields=[{name:'name',label:'Nombre',required:true},{name:'season',label:'Temporada'},{name:'budget',label:'Presupuesto inicial',type:'number',min:'0',step:'0.01'},{name:'currency',label:'Moneda',options:['ARS','USD']},{name:'status',label:'Estado',options:['Planificación','En producción','En temporada','Finalizada']}];handler=d=>state.productions.push(d)}else if(type==='new-budget'){title='Nuevo ítem presupuestario';fields=[{name:'production',label:'Producción',options:prods},{name:'category',label:'Rubro',options:['Artístico','Técnico','Producción','Escenografía','Vestuario','Prensa','Sala','Derechos','Administración']},{name:'description',label:'Concepto',required:true},{name:'quantity',label:'Cantidad',type:'number',min:'0',step:'0.01',required:true},{name:'unit',label:'Precio unitario',type:'number',min:'0',step:'0.01',required:true},{name:'currency',label:'Moneda',options:['ARS','USD']}];handler=d=>state.budgets.push(d)}else if(type==='new-supplier'){title='Nuevo proveedor';fields=[{name:'name',label:'Nombre / Razón social',required:true},{name:'category',label:'Rubro'},{name:'email',label:'Correo'},{name:'terms',label:'Condiciones de pago'}];handler=d=>state.suppliers.push(d)}else if(type==='new-user'){title='Invitar usuario';fields=[{name:'name',label:'Nombre',required:true},{name:'email',label:'Correo electrónico',type:'email',required:true},{name:'role',label:'Rol',options:['Administrador general','Dirección financiera','Producción ejecutiva','Administración','Consulta','Auditoría']},{name:'status',label:'Estado',options:['Invitación pendiente','Activo']}];handler=d=>state.users.push(d)}else if(type==='new-company'){title='Nueva organización';fields=[{name:'name',label:'Nombre de la organización',required:true},{name:'kind',label:'Tipo',options:['Productora','Compañía','Sala teatral','Coproducción']},{name:'country',label:'País',placeholder:'Argentina'}];handler=d=>{state.company=d.name;$('#companyLabel').textContent=d.name;toast('Organización agregada en la sesión local')}}$('#pageContent').insertAdjacentHTML('beforeend',formMarkup(title,fields,'Guardar registro'));$('#entryForm').addEventListener('submit',e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target).entries());['amount','budget','quantity','unit'].forEach(k=>{if(d[k]!==undefined)d[k]=Number(d[k])});if(type==='new-budget')d.quantity=d.quantity||0, d.unit=d.unit||0;handler(d);render();toast('Registro guardado en esta sesión')})}
 document.addEventListener('click',e=>{const nav=e.target.closest('[data-view]');if(nav){state.view=nav.dataset.view;render();$('#sidebar').classList.remove('open');return}const a=e.target.closest('[data-action]');if(!a)return;const act=a.dataset.action;if(act.startsWith('new-'))showForm(act);else if(act==='cancel-form')render();else if(act==='export-csv'){const rows=[['Fecha','Producción','Categoría','Descripción','Importe','Moneda','Estado'],...state.expenses.map(x=>[x.date,x.production,x.category,x.description,x.amount,x.currency,x.status])];const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(',')).join('\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='musical-budget-gastos.csv';link.click();URL.revokeObjectURL(url)}else if(act==='save-settings'){toast('Preferencias guardadas en la sesión local')}});$('#mobileMenu').addEventListener('click',()=>$('#sidebar').classList.toggle('open'));render();
-checkSupabaseConnection();
+
+function mountAuthGate(){
+  if(document.getElementById('authGate'))return;
+  const gate=document.createElement('div');
+  gate.id='authGate';
+  gate.className='auth-gate';
+  gate.innerHTML='<div class="auth-card"><div class="auth-brand"><span class="brand-mark">M</span><div><b>MUSICAL BUDGET</b><small>CICLORAMAS PRODUCCIONES</small></div></div><h1>Ingresar al sistema</h1><p>Accedé con el correo y la contraseña de tu usuario administrador.</p><form id="loginForm"><label for="loginEmail">Correo electrónico</label><input id="loginEmail" name="email" type="email" autocomplete="username" required placeholder="tu correo"><label for="loginPassword">Contraseña</label><input id="loginPassword" name="password" type="password" autocomplete="current-password" required placeholder="Tu contraseña"><button class="button primary" id="loginButton" type="submit">Ingresar</button><div id="authMessage" role="status"></div></form><small class="auth-security">Acceso privado · Conexión segura con Supabase</small></div>';
+  document.body.appendChild(gate);
+  document.getElementById('loginForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const form=new FormData(e.currentTarget),email=String(form.get('email')||'').trim(),password=String(form.get('password')||'');
+    const button=document.getElementById('loginButton'),message=document.getElementById('authMessage');
+    button.disabled=true;button.textContent='Verificando…';message.textContent='';
+    try{
+      if(!supabaseClient)throw new Error('No se pudo inicializar Supabase. Revisá la configuración.');
+      const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+      if(error)throw error;
+      await initializeOrganization(data.user);
+    }catch(error){message.textContent=authErrorMessage(error);button.disabled=false;button.textContent='Ingresar'}
+  });
+}
+function authErrorMessage(error){
+  const msg=String(error?.message||'');
+  if(/invalid login credentials/i.test(msg))return 'El correo o la contraseña no son correctos.';
+  if(/email not confirmed/i.test(msg))return 'El correo todavía no está confirmado. Revisá Authentication → Users en Supabase.';
+  return msg||'No se pudo iniciar sesión. Intentá nuevamente.';
+}
+async function initializeOrganization(user){
+  const message=document.getElementById('authMessage');
+  if(message)message.textContent='Acceso correcto. Preparando Cicloramas Producciones…';
+  const {data,error}=await supabaseClient.rpc('bootstrap_cicloramas');
+  if(error){
+    if(message)message.textContent='Tu acceso fue validado, pero no se pudo inicializar la organización: '+error.message;
+    return;
+  }
+  window.MUSICAL_BUDGET_ORGANIZATION_ID=data;
+  const gate=document.getElementById('authGate');if(gate)gate.remove();
+  const status=document.querySelector('.sidebar-bottom small');if(status)status.textContent='Sesión activa · Cicloramas Producciones';
+  let logout=document.getElementById('logoutButton');
+  if(!logout){logout=document.createElement('button');logout.id='logoutButton';logout.className='button';logout.textContent='Salir';document.querySelector('.top-actions')?.appendChild(logout);logout.addEventListener('click',async()=>{await supabaseClient.auth.signOut();location.reload()})}
+  render();
+  toast('Sesión iniciada correctamente');
+}
+async function startAuthentication(){
+  mountAuthGate();
+  if(!supabaseClient){document.getElementById('authMessage').textContent='Falta la configuración de conexión con Supabase.';return}
+  const {data,error}=await supabaseClient.auth.getSession();
+  if(error){document.getElementById('authMessage').textContent=authErrorMessage(error);return}
+  if(data.session){await initializeOrganization(data.session.user);return}
+  const status=document.querySelector('.sidebar-bottom small');if(status)status.textContent='Esperando inicio de sesión';
+}
+startAuthentication();
