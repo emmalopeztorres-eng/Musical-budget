@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101713"><meta name="description" content="Musical Budget — gestión financiera para productoras, salas y compañías.">
+  <title>Musical Budget | Gestión financiera teatral</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#"><span class="brand-mark">M</span><span><b>MUSICAL</b><small>BUDGET</small></span></a>
+    <div class="workspace-label">ESPACIO DE TRABAJO</div>
+    <button class="workspace-switch"><span class="workspace-dot"></span><span id="companyLabel">Mi productora</span><span class="chevron">⌄</span></button>
+    <nav class="nav">
+      <div class="nav-caption">GENERAL</div>
+      <button class="nav-link active" data-view="dashboard"><span>▦</span>Panel general</button>
+      <button class="nav-link" data-view="companies"><span>▤</span>Organizaciones</button>
+      <button class="nav-link" data-view="productions"><span>◈</span>Producciones</button>
+      <div class="nav-caption">GESTIÓN FINANCIERA</div>
+      <button class="nav-link" data-view="budgets"><span>▧</span>Presupuestos</button>
+      <button class="nav-link" data-view="expenses"><span>↗</span>Gastos</button>
+      <button class="nav-link" data-view="income"><span>↙</span>Ingresos</button>
+      <button class="nav-link" data-view="cashflow"><span>⇄</span>Flujo de caja</button>
+      <button class="nav-link" data-view="suppliers"><span>♧</span>Proveedores</button>
+      <div class="nav-caption">ANÁLISIS Y CONTROL</div>
+      <button class="nav-link" data-view="reports"><span>▥</span>Informes</button>
+      <button class="nav-link" data-view="users"><span>♙</span>Usuarios y permisos</button>
+      <button class="nav-link" data-view="settings"><span>⚙</span>Configuración</button>
+    </nav>
+    <div class="sidebar-bottom"><div class="secure-mark">✓</div><div><b>Espacio de trabajo</b><small>Modo demostración local</small></div></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><button class="mobile-menu" id="mobileMenu">☰</button><div class="breadcrumb">Musical Budget <span>/</span> <b id="breadcrumbCurrent">Panel general</b></div><div class="top-actions"><span class="demo-pill">DEMO</span><button class="icon-button" title="Notificaciones">♧</button><div class="avatar">VG</div></div></header>
+    <section class="page" id="pageContent"></section>
+    <footer> MUSICAL BUDGET <span>·</span> Gestión financiera para las artes escénicas <span class="footer-right">Versión inicial 0.1</span></footer>
+  </main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script src="assets/js/app.js"></script>
+</body></html>
