@@ -4,14 +4,14 @@ async function checkSupabaseConnection(){
   const status=document.querySelector('.sidebar-bottom small');
   if(!status)return;
   if(!supabaseClient){status.textContent='Configuración pendiente';return}
-  status.textContent='Conectando con Supabase…';
+  status.textContent='Cliente Supabase inicializado…';
   try{
     const {error}=await supabaseClient.auth.getSession();
     if(error)throw error;
-    status.textContent='Supabase disponible · falta configurar la base';
-    status.title='El servicio de autenticación responde. La base de datos y sus permisos todavía deben configurarse.';
+    status.textContent='Cliente Supabase listo · base pendiente';
+    status.title='La configuración pública y el cliente se inicializaron. Todavía falta configurar y probar las tablas y sus permisos.';
   }catch(error){
-    status.textContent='No se pudo conectar con Supabase';
+    status.textContent='No se pudo inicializar Supabase';
     status.title=error.message||'Revisá la URL y la Publishable key.';
     console.error('MUSICAL BUDGET / Supabase:',error);
   }
